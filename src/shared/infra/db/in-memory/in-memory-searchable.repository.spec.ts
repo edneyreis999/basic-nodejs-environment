@@ -5,25 +5,25 @@ import { Uuid } from "../../../domain/value-objects/uuid.vo";
 import { InMemorySearchableRepository } from "./in-memory.repository";
 
 type StubEntityConstructorProps = {
-  entity_id?: Uuid;
+  entityId?: Uuid;
   name: string;
   price: number;
 };
 
 class StubEntity extends Entity {
-  entity_id: Uuid;
+  entityId: Uuid;
   name: string;
   price: number;
   constructor(props: StubEntityConstructorProps) {
     super();
-    this.entity_id = props.entity_id ?? new Uuid();
+    this.entityId = props.entityId ?? new Uuid();
     this.name = props.name;
     this.price = +props.price;
   }
 
   toJSON(): { id: string } & StubEntityConstructorProps {
     return {
-      id: this.entity_id.id,
+      id: this.entityId.id,
       name: this.name,
       price: this.price,
     };

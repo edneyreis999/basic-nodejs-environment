@@ -5,26 +5,26 @@ import { InMemoryRepository } from "./in-memory.repository";
 
 
 type StubEntityConstructor = {
-  entity_id?: Uuid;
+  entityId?: Uuid;
   name: string;
   price: number;
 };
 
 class StubEntity extends Entity {
-  entity_id: Uuid;
+  entityId: Uuid;
   name: string;
   price: number;
 
   constructor(props: StubEntityConstructor) {
     super();
-    this.entity_id = props.entity_id || new Uuid();
+    this.entityId = props.entityId || new Uuid();
     this.name = props.name;
     this.price = props.price;
   }
 
   toJSON() {
     return {
-      entity_id: this.entity_id.id,
+      entityId: this.entityId.id,
       name: this.name,
       price: this.price,
     };
@@ -46,7 +46,7 @@ describe("InMemoryRepository Unit Tests", () => {
 
   test("should insert a new entity", async () => {
     const entity = new StubEntity({
-      entity_id: new Uuid(),
+      entityId: new Uuid(),
       name: "Test",
       price: 100,
     });
@@ -60,12 +60,12 @@ describe("InMemoryRepository Unit Tests", () => {
   test("should bulk insert entities", async () => {
     const entities = [
       new StubEntity({
-        entity_id: new Uuid(),
+        entityId: new Uuid(),
         name: "Test",
         price: 100,
       }),
       new StubEntity({
-        entity_id: new Uuid(),
+        entityId: new Uuid(),
         name: "Test",
         price: 100,
       }),
@@ -90,7 +90,7 @@ describe("InMemoryRepository Unit Tests", () => {
   it("should throws error on update when entity not found", async () => {
     const entity = new StubEntity({ name: "name value", price: 5 });
     await expect(repo.update(entity)).rejects.toThrow(
-      new NotFoundError(entity.entity_id, StubEntity)
+      new NotFoundError(entity.entityId, StubEntity)
     );
   });
 
@@ -99,7 +99,7 @@ describe("InMemoryRepository Unit Tests", () => {
     await repo.insert(entity);
 
     const entityUpdated = new StubEntity({
-      entity_id: entity.entity_id,
+      entityId: entity.entityId,
       name: "updated",
       price: 1,
     });
@@ -124,7 +124,7 @@ describe("InMemoryRepository Unit Tests", () => {
     const entity = new StubEntity({ name: "name value", price: 5 });
     await repo.insert(entity);
 
-    await repo.delete(entity.entity_id);
+    await repo.delete(entity.entityId);
     expect(repo.items).toHaveLength(0);
   });
 
@@ -132,7 +132,7 @@ describe("InMemoryRepository Unit Tests", () => {
     const entity = new StubEntity({ name: "name value", price: 5 });
     await repo.insert(entity);
 
-    const entityFound = await repo.findById(entity.entity_id);
+    const entityFound = await repo.findById(entity.entityId);
     expect(entityFound).toStrictEqual(entity);
   });
 
