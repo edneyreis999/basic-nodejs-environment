@@ -15,6 +15,7 @@ module.exports = {
       node: true,
       jest: true,
     },
+    ignorePatterns: [".eslintrc.cjs", "commitlint.config.ts"],
     rules: {
       '@typescript-eslint/interface-name-prefix': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
