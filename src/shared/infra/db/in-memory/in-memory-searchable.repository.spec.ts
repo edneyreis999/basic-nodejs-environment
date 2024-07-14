@@ -1,8 +1,8 @@
-import { Entity } from "../../../domain/entity";
-import { SearchParams } from "../../../domain/repository/search-params";
-import { SearchResult } from "../../../domain/repository/search-result";
-import { Uuid } from "../../../domain/value-objects/uuid.vo";
-import { InMemorySearchableRepository } from "./in-memory.repository";
+import { Entity } from '../../../domain/entity';
+import { SearchParams } from '../../../domain/repository/search-params';
+import { SearchResult } from '../../../domain/repository/search-result';
+import { Uuid } from '../../../domain/value-objects/uuid.vo';
+import { InMemorySearchableRepository } from './in-memory.repository';
 
 type StubEntityConstructorProps = {
   entityId?: Uuid;
@@ -30,29 +30,20 @@ class StubEntity extends Entity {
   }
 }
 
-class StubInMemorySearchableRepository extends InMemorySearchableRepository<
-  StubEntity,
-  Uuid
-> {
+class StubInMemorySearchableRepository extends InMemorySearchableRepository<StubEntity, Uuid> {
   sortableFields: string[] = ['name'];
 
   getEntity(): new (...args: any[]) => StubEntity {
     return StubEntity;
   }
 
-  protected async applyFilter(
-    items: StubEntity[],
-    filter: string | null,
-  ): Promise<StubEntity[]> {
+  protected async applyFilter(items: StubEntity[], filter: string | null): Promise<StubEntity[]> {
     if (!filter) {
       return items;
     }
 
-    return items.filter((i) => {
-      return (
-        i.name.toLowerCase().includes(filter.toLowerCase()) ||
-        i.price.toString() === filter
-      );
+    return items.filter(i => {
+      return i.name.toLowerCase().includes(filter.toLowerCase()) || i.price.toString() === filter;
     });
   }
 }
@@ -130,11 +121,8 @@ describe('InMemorySearchableRepository Unit Tests', () => {
         new StubEntity({ name: 'c', price: 5 }),
       ];
 
-      const itemsSorted = repository['applySort'](
-        items,
-        'name',
-        'asc',
-        (sort, item) => item.name.toLowerCase()
+      const itemsSorted = repository['applySort'](items, 'name', 'asc', (sort, item) =>
+        item.name.toLowerCase(),
       );
       expect(itemsSorted).toStrictEqual([items[1], items[0], items[2]]);
     });
@@ -202,9 +190,7 @@ describe('InMemorySearchableRepository Unit Tests', () => {
         }),
       );
 
-      result = await repository.search(
-        new SearchParams({ page: 2, per_page: 2, filter: 'TEST' }),
-      );
+      result = await repository.search(new SearchParams({ page: 2, per_page: 2, filter: 'TEST' }));
       expect(result).toStrictEqual(
         new SearchResult({
           items: [items[3]],
@@ -284,13 +270,10 @@ describe('InMemorySearchableRepository Unit Tests', () => {
         repository.items = items;
       });
 
-      test.each(arrange)(
-        'when value is %j',
-        async ({ search_params, search_result }) => {
-          const result = await repository.search(search_params);
-          expect(result).toStrictEqual(search_result);
-        },
-      );
+      test.each(arrange)('when value is %j', async ({ search_params, search_result }) => {
+        const result = await repository.search(search_params);
+        expect(result).toStrictEqual(search_result);
+      });
     });
 
     it('should search using filter, sort and paginate', async () => {

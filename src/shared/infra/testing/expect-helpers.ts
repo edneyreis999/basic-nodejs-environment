@@ -1,6 +1,6 @@
-import { ClassValidatorFields } from "../../domain/validators/class-validator-fields";
-import { EntityValidationError } from "../../domain/validators/validation.error";
-import { FieldsErrors } from "../../domain/validators/validator-fields-interface";
+import { ClassValidatorFields } from '../../domain/validators/class-validator-fields';
+import { EntityValidationError } from '../../domain/validators/validation.error';
+import { FieldsErrors } from '../../domain/validators/validator-fields-interface';
 
 type Expected =
   | {
@@ -11,7 +11,7 @@ type Expected =
 
 expect.extend({
   containsErrorMessages(expected: Expected, received: FieldsErrors) {
-    if (typeof expected === "function") {
+    if (typeof expected === 'function') {
       try {
         expected();
         return isValid();
@@ -32,10 +32,7 @@ expect.extend({
   },
 });
 
-function assertContainsErrorsMessages(
-  expected: FieldsErrors,
-  received: FieldsErrors
-) {
+function assertContainsErrorsMessages(expected: FieldsErrors, received: FieldsErrors) {
   const isMatch = expect.objectContaining(received).asymmetricMatch(expected);
 
   return isMatch
@@ -44,11 +41,11 @@ function assertContainsErrorsMessages(
         pass: false,
         message: () =>
           `The validation errors not contains ${JSON.stringify(
-            received
+            received,
           )}. Current: ${JSON.stringify(expected)}`,
       };
 }
 
 function isValid() {
-  return { pass: true, message: () => "" };
+  return { pass: true, message: () => '' };
 }

@@ -1,4 +1,4 @@
-import { ValueObject } from "../value-object";
+import { ValueObject } from '../value-object';
 
 export type SortDirection = 'asc' | 'desc';
 
@@ -47,11 +47,7 @@ export class SearchParams<Filter = string> extends ValueObject {
   private set per_page(value: number) {
     let _per_page = value === (true as any) ? this._per_page : +value;
 
-    if (
-      Number.isNaN(_per_page) ||
-      _per_page <= 0 ||
-      parseInt(_per_page as any) !== _per_page
-    ) {
+    if (Number.isNaN(_per_page) || _per_page <= 0 || parseInt(_per_page as any) !== _per_page) {
       _per_page = this._per_page;
     }
 
@@ -63,8 +59,7 @@ export class SearchParams<Filter = string> extends ValueObject {
   }
 
   private set sort(value: string | null) {
-    this._sort =
-      value === null || value === undefined || value === '' ? null : `${value}`;
+    this._sort = value === null || value === undefined || value === '' ? null : `${value}`;
   }
 
   get sort_dir(): SortDirection | null {
