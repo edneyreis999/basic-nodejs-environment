@@ -1,14 +1,13 @@
 import { Entity } from '../../shared/domain/entity';
-import { EntityValidationError } from '../../shared/domain/validators/validation.error';
 import type { ValueObject } from '../../shared/domain/value-object';
 import { Uuid } from '../../shared/domain/value-objects/uuid.vo';
 import { UserFakeBuilder } from './user-fake.builder';
-import { UserValidatorFactory } from './user.validator';
+import { UserValidatorFactory, type ValidFields } from './user.validator';
 
 export type UserConstructorProps = {
   userId?: Uuid;
   displayName: string;
-  dustBalance?: number;
+  dustBalance?: number | null;
   isActive?: boolean;
   createdAt?: Date;
 };
@@ -41,23 +40,23 @@ export class User extends Entity {
 
   static create(props: UserCreateCommand): User {
     const user = new User(props);
-    User.validate(user);
+    user.validate(['displayName', 'dustBalance']);
     return user;
   }
 
-  changeDisplayName(name: string): void {
-    this.displayName = name;
-    User.validate(this);
+  changeDisplayName(displayName: string): void {
+    this.displayName = displayName;
+    this.validate(['displayName']);
   }
 
   addDust(amount: number): void {
     this.dustBalance += amount;
-    User.validate(this);
+    this.validate(['dustBalance']);
   }
 
   subtractDust(amount: number): void {
     this.dustBalance -= amount;
-    User.validate(this);
+    this.validate(['dustBalance']);
   }
 
   activate() {
@@ -68,13 +67,9 @@ export class User extends Entity {
     this.isActive = false;
   }
 
-  static validate(entity: User) {
+  validate(fields?: ValidFields[]) {
     const validator = UserValidatorFactory.create();
-    const isValid = validator.validate(entity);
-    if (!isValid) {
-      throw new EntityValidationError(validator.errors!);
-    }
-    console.log('User validated', entity);
+    return validator.validate(this.notification, this, fields);
   }
 
   static fake() {
@@ -84,7 +79,7 @@ export class User extends Entity {
   toJSON() {
     return {
       userId: this.userId.id,
-      name: this.displayName,
+      displayName: this.displayName,
       dustBalance: this.dustBalance,
       isActive: this.isActive,
       createdAt: this.createdAt,
